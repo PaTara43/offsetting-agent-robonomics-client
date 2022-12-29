@@ -5,7 +5,7 @@ import os
 from robonomicsinterface import Account, PubSub, Liability, ipfs_upload_content, web_3_auth
 from substrateinterface import KeypairType
 from threading import Thread
-from time import time, sleep
+from time import time
 
 from utils import (
     LAST_BURN_DATE_QUERY_TOPIC,
@@ -72,5 +72,4 @@ if __name__ == '__main__':
                                    promisee=promisee,
                                    promisee_signature=dict(ED25519=promisee_signature),
                                    timestamp=time())
-            sleep(2)
             print(pubsub.publish(LIABILITY_QUERY_TOPIC, str(liability_query)))
