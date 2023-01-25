@@ -1,11 +1,12 @@
+import ipfshttpclient2
 import json
 import logging
 import os
 
-from robonomicsinterface import Account, PubSub, Liability, ipfs_upload_content, web_3_auth
+from robonomicsinterface import Account, PubSub, Liability, web_3_auth
 from substrateinterface import KeypairType
 from threading import Thread
-from time import time
+from time import time, sleep
 
 from utils import (
     LAST_BURN_DATE_QUERY_TOPIC,
@@ -13,7 +14,7 @@ from utils import (
     LIABILITY_QUERY_TOPIC,
     LIABILITY_REPORT_TOPIC,
     DAPP_NODE_REMOTE_WS,
-    UPLOAD_W3GW,
+    IPFS_W3GW,
     AGENT_NODE_MULTIADDR,
 )
 from utils import parse_income_message
@@ -22,7 +23,9 @@ logger = logging.getLogger(__name__)
 
 
 def callback(obj, update_nr, subscription_id):
-    print(parse_income_message(obj["params"]["result"]["data"]))
+    response = parse_income_message(obj["params"]["result"]["data"])
+    if response["address"] == dapp_user.get_address():
+        print(response)
 
 
 def subscribe(topic):
@@ -48,7 +51,6 @@ if __name__ == '__main__':
 
     # Negotiations query emulation:
     pubsub = PubSub(dapp_user)
-    logger.info(pubsub.connect(AGENT_NODE_MULTIADDR))
 
     while True:
 
@@ -56,12 +58,17 @@ if __name__ == '__main__':
 
         if query == "1":
             negotiations_query = dict(address=dapp_user.get_address(), kwh_current=20.0, timestamp=time())
+            logger.info(pubsub.connect(AGENT_NODE_MULTIADDR))
+            sleep(1)
             print(f"publish: {pubsub.publish(LAST_BURN_DATE_QUERY_TOPIC, str(negotiations_query))}")
         elif query == "2":
+            logger.info(pubsub.connect(AGENT_NODE_MULTIADDR))
+            sleep(1)
 
+            content = dict(geo="59.934280, 30.335099", kwh=5.0)
             auth = web_3_auth(seed=os.getenv("DAPP_SEED"))
-            content = json.dumps({"geo": "59.934280, 30.335099", "kwh": 5.0}).encode("utf-8")
-            technics, _ = ipfs_upload_content(content=content, gateway=UPLOAD_W3GW, auth=auth)
+            client = ipfshttpclient2.connect(addr=IPFS_W3GW, auth=auth)
+            technics = client.add_json(content)
             economics = 0
             promisee = dapp_user.get_address()
             liability_singer = Liability(dapp_user)

@@ -7,13 +7,12 @@ Robonomics node launch for dev tests:
 
 """
 
-ROBONOMICS_NODE = None  # None for Kusama Parachain Node. "ws://127.0.0.1:9944" for testing.
-DAPP_NODE_REMOTE_WS = "ws://127.0.0.1:9991"  # This if for _dapp_pubsub_simulator 23.88.52.147
-AGENT_NODE_MULTIADDR = "/ip4/127.0.0.1/tcp/44440"
+DAPP_NODE_REMOTE_WS = "wss://kusama.rpc.robonomics.network/"  # This if for _dapp_pubsub_simulator 23.88.52.147
+AGENT_NODE_MULTIADDR = "/dns/robonomics.rpc.multi-agent.io/tcp/44440"
 
 LAST_BURN_DATE_QUERY_TOPIC = "last_burn_date_query"
 LAST_BURN_DATE_RESPONSE_TOPIC = "last_burn_date_response"
 LIABILITY_QUERY_TOPIC = "liability_query"
 LIABILITY_REPORT_TOPIC = "liability_report"
 
-UPLOAD_W3GW = "http://127.0.0.1:5001"
+IPFS_W3GW = "/ip4/127.0.0.1/tcp/5001/http"
