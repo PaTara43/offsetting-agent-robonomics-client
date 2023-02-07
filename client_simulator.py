@@ -9,8 +9,8 @@ from threading import Thread
 from time import time, sleep
 
 from utils import (
-    LAST_BURN_DATE_QUERY_TOPIC,
-    LAST_BURN_DATE_RESPONSE_TOPIC,
+    LAST_COMPENSATION_DATE_QUERY_TOPIC,
+    LAST_COMPENSATION_DATE_RESPONSE_TOPIC,
     LIABILITY_QUERY_TOPIC,
     LIABILITY_REPORT_TOPIC,
     DAPP_NODE_REMOTE_WS,
@@ -44,7 +44,7 @@ if __name__ == '__main__':
                         crypto_type=KeypairType.ED25519)
 
     # Pubsub subscriber emulation
-    negotiations_subscriber_thread = Thread(target=subscribe, args=(LAST_BURN_DATE_RESPONSE_TOPIC,))
+    negotiations_subscriber_thread = Thread(target=subscribe, args=(LAST_COMPENSATION_DATE_RESPONSE_TOPIC,))
     report_subscriber_thread = Thread(target=subscribe, args=(LIABILITY_REPORT_TOPIC,))
     negotiations_subscriber_thread.start()
     report_subscriber_thread.start()
@@ -60,7 +60,7 @@ if __name__ == '__main__':
             negotiations_query = dict(address=dapp_user.get_address(), kwh_current=20.0, timestamp=time())
             logger.info(pubsub.connect(AGENT_NODE_MULTIADDR))
             sleep(1)
-            print(f"publish: {pubsub.publish(LAST_BURN_DATE_QUERY_TOPIC, str(negotiations_query))}")
+            print(f"publish: {pubsub.publish(LAST_COMPENSATION_DATE_QUERY_TOPIC, str(negotiations_query))}")
         elif query == "2":
             logger.info(pubsub.connect(AGENT_NODE_MULTIADDR))
             sleep(1)
